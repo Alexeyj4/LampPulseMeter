@@ -24,11 +24,10 @@ void loop() {
     if(adc<adc_min)adc_min=adc;
     if(adc>adc_max)adc_max=adc;
   }
-  Serial.println("debug");  
-//  oled.print(0,String(adc_max-adc_min));
-//  oled.print(2,String(adc_max));
-//  oled.print(3,String(adc_min));
-  oled.print(0,"debug");
+   
+  oled.print(0,String(adc_max-adc_min));
+  oled.print(2,String(adc_max));
+  oled.print(3,String(adc_min));
   oled.update();
   adc_min=4096;
   adc_max=0;
