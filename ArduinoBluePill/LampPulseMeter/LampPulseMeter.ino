@@ -13,20 +13,32 @@ const int photo_r_input_pin4=PA4; //A4=PA4
 const int avg_filter_value=20000; //filter for calc min and max
 const float freq_coef=1.7857; //coef for calc freq
 
+int gain=0; //automaic gain level
 int adc_thr_min;//threshold for freq meas
 int adc_thr_max;//threshold for freq meas
 
 #include <Oled.h>
 Oled oled;
 
+void gain_inc(){//increment gain level
+  if(gain==0){pinMode(photo_r_input_pin1, INPUT_PULLUP);pinMode(photo_r_input_pin2,        INPUT);pinMode(photo_r_input_pin3,        INPUT);pinMode(photo_r_input_pin4,        INPUT);gain=1;return;}
+  if(gain==1){pinMode(photo_r_input_pin1, INPUT_PULLUP);pinMode(photo_r_input_pin2, INPUT_PULLUP);pinMode(photo_r_input_pin3,        INPUT);pinMode(photo_r_input_pin4,        INPUT);gain=2;return;}
+  if(gain==2){pinMode(photo_r_input_pin1, INPUT_PULLUP);pinMode(photo_r_input_pin2, INPUT_PULLUP);pinMode(photo_r_input_pin3, INPUT_PULLUP);pinMode(photo_r_input_pin4,        INPUT);gain=3;return;}
+  if(gain==3){pinMode(photo_r_input_pin1, INPUT_PULLUP);pinMode(photo_r_input_pin2, INPUT_PULLUP);pinMode(photo_r_input_pin3, INPUT_PULLUP);pinMode(photo_r_input_pin4, INPUT_PULLUP);gain=4;return;}  
+}
+
+void gain_dec(){//decrement gain level
+  
+}
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   pinMode(photo_r_input_pin0, INPUT_PULLDOWN);
-  pinMode(photo_r_input_pin1, INPUT_PULLDOWN);
-  pinMode(photo_r_input_pin2, INPUT_PULLDOWN);
-  pinMode(photo_r_input_pin3, INPUT_PULLDOWN);
-  pinMode(photo_r_input_pin4, INPUT_PULLDOWN);
+  pinMode(photo_r_input_pin1, INPUT);
+  pinMode(photo_r_input_pin2, INPUT);
+  pinMode(photo_r_input_pin3, INPUT);
+  pinMode(photo_r_input_pin4, INPUT);
   oled.begin();
 }
 
@@ -56,10 +68,12 @@ void loop() {
 
   //Serial.println("debug"); 
   oled.print(0,String((float(adc_max-adc_min)/adc_max)*100,1)+"%");
-  oled.print(2,"Ярк: "+String(adc_max));  
-  oled.print(3,String(int(freq_counter*freq_coef))+" Гц"); 
+  oled.print(1,"Ярк: "+String(adc_max));  
+  oled.print(2,String(int(freq_counter*freq_coef))+" Гц"); 
+  oled.print(3,"АРУ: "+String(gain));
   oled.update();
+  if(adc_max>3000)gain_inc();
   adc_min=4096;
-  adc_max=0;
+  adc_max=0;  
   
 }
