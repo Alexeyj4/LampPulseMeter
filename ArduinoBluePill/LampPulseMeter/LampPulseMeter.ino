@@ -12,23 +12,30 @@ const int photo_r_input_pin3=PA3; //A3=PA3
 const int photo_r_input_pin4=PA4; //A4=PA4
 const int avg_filter_value=20000; //filter for calc min and max
 const float freq_coef=1.7857; //coef for calc freq
+const int adc_max_gain_control_top=3000;//gain control threshold
+const int adc_max_gain_control_bot=1000;//gain control threshold
 
-int gain=0; //automaic gain level
+int gain=0; //automaic gain level//0-max gain//4-min gain
 int adc_thr_min;//threshold for freq meas
 int adc_thr_max;//threshold for freq meas
 
 #include <Oled.h>
 Oled oled;
 
-void gain_inc(){//increment gain level
-  if(gain==0){pinMode(photo_r_input_pin1, INPUT_PULLUP);pinMode(photo_r_input_pin2,        INPUT);pinMode(photo_r_input_pin3,        INPUT);pinMode(photo_r_input_pin4,        INPUT);gain=1;return;}
-  if(gain==1){pinMode(photo_r_input_pin1, INPUT_PULLUP);pinMode(photo_r_input_pin2, INPUT_PULLUP);pinMode(photo_r_input_pin3,        INPUT);pinMode(photo_r_input_pin4,        INPUT);gain=2;return;}
-  if(gain==2){pinMode(photo_r_input_pin1, INPUT_PULLUP);pinMode(photo_r_input_pin2, INPUT_PULLUP);pinMode(photo_r_input_pin3, INPUT_PULLUP);pinMode(photo_r_input_pin4,        INPUT);gain=3;return;}
-  if(gain==3){pinMode(photo_r_input_pin1, INPUT_PULLUP);pinMode(photo_r_input_pin2, INPUT_PULLUP);pinMode(photo_r_input_pin3, INPUT_PULLUP);pinMode(photo_r_input_pin4, INPUT_PULLUP);gain=4;return;}  
+void gain_dec(){//decrement gain level
+  delay(100);
+  if(gain==0){pinMode(photo_r_input_pin1, INPUT_PULLDOWN);pinMode(photo_r_input_pin2,          INPUT);pinMode(photo_r_input_pin3,          INPUT);pinMode(photo_r_input_pin4,          INPUT);gain=1;return;}
+  if(gain==1){pinMode(photo_r_input_pin1, INPUT_PULLDOWN);pinMode(photo_r_input_pin2, INPUT_PULLDOWN);pinMode(photo_r_input_pin3,          INPUT);pinMode(photo_r_input_pin4,          INPUT);gain=2;return;}
+  if(gain==2){pinMode(photo_r_input_pin1, INPUT_PULLDOWN);pinMode(photo_r_input_pin2, INPUT_PULLDOWN);pinMode(photo_r_input_pin3, INPUT_PULLDOWN);pinMode(photo_r_input_pin4,          INPUT);gain=3;return;}
+  if(gain==3){pinMode(photo_r_input_pin1, INPUT_PULLDOWN);pinMode(photo_r_input_pin2, INPUT_PULLDOWN);pinMode(photo_r_input_pin3, INPUT_PULLDOWN);pinMode(photo_r_input_pin4, INPUT_PULLDOWN);gain=4;return;}  
 }
 
-void gain_dec(){//decrement gain level
-  
+void gain_inc(){//increment gain level
+  delay(100);
+  if(gain==4){pinMode(photo_r_input_pin1, INPUT_PULLDOWN);pinMode(photo_r_input_pin2, INPUT_PULLDOWN);pinMode(photo_r_input_pin3, INPUT_PULLDOWN);pinMode(photo_r_input_pin4,        INPUT);gain=3;return;}
+  if(gain==3){pinMode(photo_r_input_pin1, INPUT_PULLDOWN);pinMode(photo_r_input_pin2, INPUT_PULLDOWN);pinMode(photo_r_input_pin3,          INPUT);pinMode(photo_r_input_pin4,        INPUT);gain=2;return;}
+  if(gain==2){pinMode(photo_r_input_pin1, INPUT_PULLDOWN);pinMode(photo_r_input_pin2,          INPUT);pinMode(photo_r_input_pin3,          INPUT);pinMode(photo_r_input_pin4,        INPUT);gain=1;return;}
+  if(gain==1){pinMode(photo_r_input_pin1,          INPUT);pinMode(photo_r_input_pin2,          INPUT);pinMode(photo_r_input_pin3,          INPUT);pinMode(photo_r_input_pin4,        INPUT);gain=0;return;}  
 }
 
 void setup() {
@@ -72,7 +79,8 @@ void loop() {
   oled.print(2,String(int(freq_counter*freq_coef))+" Гц"); 
   oled.print(3,"АРУ: "+String(gain));
   oled.update();
-  if(adc_max>3000)gain_inc();
+  if(adc_max>adc_max_gain_control_top)gain_dec();
+  if(adc_max<adc_max_gain_control_bot)gain_inc();
   adc_min=4096;
   adc_max=0;  
   
