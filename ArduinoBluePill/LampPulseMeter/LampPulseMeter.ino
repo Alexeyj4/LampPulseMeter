@@ -1,20 +1,20 @@
-<<<<<<< Updated upstream
-const int photo_r_input_pin=PA0; //A0=PA0
+//схема устройства простая, поэтому в KiCade не оформлял:
+//плата BluePill подключена к OLED-дисплею через I2C
+//фоторизистор GL5528 один конец к +3,3 второй конец - к A0-A4. 
+//Подтягивающие резисторы испрользуются встроенные в BluePill (к земле)
+//Подключаются по мере необходимости для регулировки уровня
+//АЦП считывается с одного из них
+
+const int photo_r_input_pin0=PA0; //A0=PA0
+const int photo_r_input_pin1=PA1; //A1=PA1
+const int photo_r_input_pin2=PA2; //A2=PA2
+const int photo_r_input_pin3=PA3; //A3=PA3
+const int photo_r_input_pin4=PA4; //A4=PA4
 const int avg_filter_value=20000; //filter for calc min and max
 const float freq_coef=1.7857; //coef for calc freq
 
 int adc_thr_min;//threshold for freq meas
 int adc_thr_max;//threshold for freq meas
-=======
-//схема устройства простая, поэтому в KiCade не оформлял:
-//плата BluePill подключена к OLED-дисплею через I2C
-//фоторизистор GL5528 один конец к +3,3 второй конец - к A0,A1. Подтягивающие резисторы испрользуются встроенные в BluePill
-//АЦП считывается с одного из них
-
-const int photo_r_input_pin0=PA0; //A0=PA0
-const int photo_r_input_pin1=PA1; //A1=PA1
-const int avg_filter_value=10000; //filter for calc min and max
->>>>>>> Stashed changes
 
 #include <Oled.h>
 Oled oled;
@@ -24,6 +24,9 @@ void setup() {
   Serial.begin(115200);
   pinMode(photo_r_input_pin0, INPUT_PULLDOWN);
   pinMode(photo_r_input_pin1, INPUT_PULLDOWN);
+  pinMode(photo_r_input_pin2, INPUT_PULLDOWN);
+  pinMode(photo_r_input_pin3, INPUT_PULLDOWN);
+  pinMode(photo_r_input_pin4, INPUT_PULLDOWN);
   oled.begin();
 }
 
