@@ -11,7 +11,7 @@ const int photo_r_input_pin2=PA2; //A2=PA2
 const int photo_r_input_pin3=PA3; //A3=PA3
 const int photo_r_input_pin4=PA4; //A4=PA4
 const int avg_filter_value=20000; //filter for calc min and max
-const float freq_coef=1.7857; //coef for calc freq
+const float freq_coef=3.5714; //coef for calc freq
 const int adc_max_gain_control_top=3000;//gain control threshold
 const int adc_max_gain_control_bot=1000;//gain control threshold
 
